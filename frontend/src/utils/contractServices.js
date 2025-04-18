@@ -1,4 +1,4 @@
-import DTK_ABI from '../DTK.json';
+import DTK_ABI from '../DataToken.json';
 import {BrowserProvider, Contract} from 'ethers';
 import {CONTRACT_ADDRESS} from'../constraints.js';
 
@@ -20,8 +20,8 @@ initialise();
 
 export const requestAccount = async() => {
     try{
-    const accoounts = await provider.send('eth_requestAccounts', []);
-    return account[0];
+    const accounts = await provider.send('eth_requestAccounts', []);
+    return accounts[0];
 }catch (error) {
     console.error('Error requesting accounts:', error.message);
     return null;
@@ -29,9 +29,9 @@ export const requestAccount = async() => {
 };
 
 
-export const mintNFT = async (tokenURI) => {
+export const mintNFT = async (CID) => {
     try {
-        const transaction = await contract.mint(tokenURI, signer);
+        const transaction = await contract.mint(CID);
 
         await transaction.wait();
         console.log('NFT minted successfully');
@@ -40,30 +40,32 @@ export const mintNFT = async (tokenURI) => {
     }
 }
 
-export const getURIs = async () => {
+/*export const getURIs = async () => {
     try {
-        const URI = await contract.getNFTs(signer);
-        return nfts;
+        const URI = await contract.tokenURI(signer);
+        return URI;
     } catch (error) {
         console.error('Error fetching NFTs:', error.message);
         return [];
     }
-}
-export const getNFTMetadata = async (tokenURI) => {
+}*/
+
+export const getCID = async (tokenId) => {
     try {
-        const metadata = await contract.getNFTMetadata(tokenURI);
+        const metadata = await contract.getNFTMetadata(tokenId);
         return metadata;
     } catch (error) {
         console.error('Error fetching NFT metadata:', error.message);
         return null;
     }
 }
-export const transferNFT = async (to, tokenId) => {
+
+export const burnNFT = async (tokenId) => {
     try {
-        const transaction = await contract.transfer(signer,to, tokenId);
+        const transaction = await contract.burnToken(tokenId);
         await transaction.wait();
-        console.log('NFT transferred successfully');
+        console.log('NFT burned successfully');
     } catch (error) {
-        console.error('Error transferring NFT:', error.message);
+        console.error('Error burning NFT:', error.message);
     }
 }
