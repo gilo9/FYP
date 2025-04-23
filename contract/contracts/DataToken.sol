@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.28;
+pragma solidity ^0.8.26;
 
 // Uncomment this line to use console.log
 import "hardhat/console.sol";
@@ -44,7 +44,12 @@ contract DataToken is ERC721,ERC721Enumerable, ERC721URIStorage, ERC721Burnable{
 
         return tokenId;
     }
-
+    function transferToken(address to, uint256 tokenId) public {
+        require(ownerOf(tokenId) == msg.sender, "Token does not exist");
+        _transfer(msg.sender, to, tokenId);
+        console.log("Transferring token with ID: %s", tokenId);
+        emit TokenTransferred(tokenId, to, msg.sender);
+    }
     function burnToken(uint256 tokenId) public {
         require(ownerOf(tokenId) == msg.sender, "Token does not exist");
         _burn(tokenId);
@@ -104,4 +109,16 @@ contract DataToken is ERC721,ERC721Enumerable, ERC721URIStorage, ERC721Burnable{
         super._increaseBalance(account, value);
     }
 
-}
+
+    function tokensOfOwner(address owner)
+        public view  returns (string[] memory)
+        {
+        uint256 tokenCount = balanceOf(owner);
+        string[] memory tokens = new string[](tokenCount);
+        for (uint256 i = 0; i < tokenCount; i++) {
+            tokens[i] = tokenURI(tokenOfOwnerByIndex(owner, i));
+        }
+        return tokens;
+    }
+
+    }
