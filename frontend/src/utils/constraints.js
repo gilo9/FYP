@@ -1,1 +1,0 @@
-CONTRACT_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678'; // Replace with your contract address

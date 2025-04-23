@@ -11,7 +11,7 @@ import { ERC721Enumerable } from "@openzeppelin/contracts/token/ERC721/extension
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
-contract DataToken is ERC721, ERC721URIStorage, ERC721Burnable{
+contract DataToken is ERC721,ERC721Enumerable, ERC721URIStorage, ERC721Burnable{
     uint256 private _nextTokenId;
 
     event TokenMinted(uint256 tokenId, address to, string uri);
@@ -65,11 +65,43 @@ contract DataToken is ERC721, ERC721URIStorage, ERC721Burnable{
     function supportsInterface(bytes4 interfaceId)
         public
         view
-        override(ERC721, ERC721URIStorage)
+        override(ERC721, ERC721URIStorage, ERC721Enumerable)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
     }
+    function totalSupply() public view override(ERC721Enumerable) returns (uint256) {
+        return super.totalSupply();
+    }
+    function tokenOfOwnerByIndex(address owner, uint256 index)
+        public
+        view
+        override(ERC721Enumerable)
+        returns (uint256)
+    {
+        return super.tokenOfOwnerByIndex(owner, index);
+    }
+    function tokenByIndex(uint256 index)
+        public
+        view
+        override(ERC721Enumerable)
+        returns (uint256)
+    {
+        return super.tokenByIndex(index);
+    }
+    function _update(address to, uint256 tokenId, address auth)
+        internal
+        override(ERC721, ERC721Enumerable)
+        returns (address)
+    {
+        return super._update(to, tokenId, auth);
+    }
 
+    function _increaseBalance(address account, uint128 value)
+        internal
+        override(ERC721, ERC721Enumerable)
+    {
+        super._increaseBalance(account, value);
+    }
 
 }

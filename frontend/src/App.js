@@ -1,8 +1,48 @@
-
+import React, { useEffect, useState } from "react";
+import { requestAccount } from "./utils/contractServices";
+import { ToastContainer, toast } from 'react-toastify';
+import ContractInfo from "./components/ContractInfo";
+import ContractActions from "./components/ContractActions";
+import ConnectWalletButton from "./components/ConnectWalletButton";
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
-  return <>Hello</>;
+  const [account, setAccount] = useState(null);
+
+  useEffect(() => {
+    const fetchAccount = async () => {
+      const account = await requestAccount();
+      setAccount(account);
+    };
+    fetchAccount();
+  }, []);
+
+  useEffect(() => {
+    const handleAccountChange = (newAccounts) => 
+      setAccount(newAccounts.length > 0 ? newAccounts[0] : null);
+    if (window.ethereum) {
+      window.ethereum.on('accountsChanged', handleAccountChange);
+    }
+    return () => {
+        window.ethereum.removeListener('accountsChanged', handleAccountChange);
+      };
+  });
+
+  return ( 
+    <div className="app">
+          {!account ? (
+        <ConnectWalletButton setAccount={setAccount} />
+      ) : (
+        <div className="contract-interactions">
+          <ContractInfo account={account} />
+          <ContractActions />
+        </div>
+      )} 
+    </div>
+  );
+
+};
+
   
-}
 
 export default App;

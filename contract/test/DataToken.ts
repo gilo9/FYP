@@ -9,7 +9,7 @@ describe("DTK Contract", function() {
         await hardhatToken.waitForDeployment();
         
         return { hardhatToken, owner, addr1 };
-    }
+    } 
 
     describe("Token Creation", function() {
         it("Should set the right owner", async function() {
@@ -101,23 +101,27 @@ describe("DTK Contract", function() {
             
         });
 
-        /* it("Should emit token transfered when _transfer is called", async function () {
-            const { hardhatToken, owner } = await loadFixture(deployTokenFixture);
+         it("Should emit token transfered when _transfer is called", async function () {
+            const { hardhatToken, owner,addr1 } = await loadFixture(deployTokenFixture);
 
             const tx = await hardhatToken.mint(owner.address, "token 1");
             const receipt = await tx.wait();
 
             const mintEvents = await hardhatToken.queryFilter(hardhatToken.filters.TokenMinted(), receipt.blockNumber);
+            const tokenId = mintEvents[0].args.tokenId;
 
-            const addr2 = hardhatToken.connect();
+            const acc = hardhatToken.connect(addr1);
 
-            const transfer = hardhatToken.transfer(owner.address,addr2,tokenId);
+            const transfer = hardhatToken.transfer(owner.address,acc,tokenId);
 
-            const reciept2 = a
+            const reciept2 = await transfer.wait();
+            const transferEvents = await hardhatToken.queryFilter(hardhatToken.filters.Transfer(), reciept2.blockNumber);
+            expect(transferEvents.length).to.be.greaterThan(0);
+            expect(transferEvents[0].args.from).to.equal(owner.address);
+            expect(transferEvents[0].args.to).to.equal(addr1.address);
+            expect(transferEvents[0].args.tokenId).to.equal(tokenId);
 
 
-
-
-        }); */
+        }); 
     })
 });
