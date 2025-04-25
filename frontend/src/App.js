@@ -5,6 +5,7 @@ import ContractInfo from "./components/ContractInfo";
 import ContractActions from "./components/ContractActions";
 import ConnectWalletButton from "./components/ConnectWalletButton";
 import 'react-toastify/dist/ReactToastify.css';
+import "./App.css";
 
 function App() {
   const [account, setAccount] = useState(null);

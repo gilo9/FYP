@@ -23,9 +23,9 @@ contract DataToken is ERC721,ERC721Enumerable, ERC721URIStorage, ERC721Burnable{
      {
         
     }
-    function _baseURI() internal view virtual override returns (string memory) {
-        return "http://127.0.0.1:8080/ipfs/";
-        }
+    // function _baseURI() internal view virtual override returns (string memory) {
+    //     return "http://127.0.0.1:8080/ipfs/";
+    //     }
 
     function mint(address to, string memory uri) 
         public

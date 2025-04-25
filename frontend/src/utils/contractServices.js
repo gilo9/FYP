@@ -21,8 +21,18 @@ export const initialize = async () => {
   initialize();
 
 
-export const viewNFTs = async(owner) => {
-    tr
+export const viewNFTs = async() => {
+    try{
+        const nfts = await contract.tokensOfOwner(signer);
+        if (nfts.length === 0) {
+            console.log("No NFTs found for this address.");
+            return [];
+        }
+        return nfts;
+    } catch (error) {
+        console.error('Error fetching NFTs:', error.message);
+        return [];
+    }
 
 }
   
@@ -66,6 +76,7 @@ export const mintNFT = async (CID) => {
 
 export const getCID = async (tokenId) => {
     try {
+        
         const metadata = await contract.tokenURI(tokenId);
         return metadata;
     } catch (error) {
