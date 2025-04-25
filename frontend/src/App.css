@@ -1,120 +1,194 @@
-table {
-    margin: auto;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 14px;
-    color: #333;
-    background-color: #f4f4f4;
-    table-layout: fixed; /* This is the key property */
-    width: 100%; /* Or specify a fixed width like 800px */
+/* App.css - Updated Styles */
+
+/* Base Styles */
+:root {
+    --primary-color: #4CAF50;
+    --primary-hover: #45a049;
+    --background-light: #f8f9fa;
+    --text-dark: #333;
+    --text-light: #f4f4f4;
+    --border-color: #ddd;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
   }
   
-  tr {
-    background-color: #f4f4f4;
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--text-dark);
+    background-color: var(--background-light);
+    margin: 0;
+    padding: 0;
   }
   
-  td, th {
-    padding: 8px;
-    border: 1px solid #ddd;
-    word-wrap: break-word; /* Ensures long words will wrap */
-    overflow: hidden; /* Hides content that overflows */
+  .app {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  /* Header Styles */
+  h2 {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+  }
+  
+  /* Button Styles */
+  button {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+    box-shadow: var(--shadow);
+    margin: 0.5rem;
+  }
+  
+  button:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+  }
+  
+  button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  /* Form Styles */
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow);
+    max-width: 600px;
+  }
+  
+  input[type="text"],
+  input[type="number"],
+  input[type="file"] {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    box-sizing: border-box;
+    transition: var(--transition);
+  }
+  
+  input[type="text"]:focus,
+  input[type="number"]:focus,
+  input[type="file"]:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+  }
+  
+  /* Table Styles */
+  table {
+    margin: 2rem auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    background-color: white;
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: var(--shadow);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+  
+  th, td {
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    text-align: left;
+    word-wrap: break-word;
   }
   
   th {
-    background-color: #4CAF50;
+    background-color: var(--primary-color);
     color: white;
-    padding: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
   }
   
-  /* If you want to specify column widths, you can do so like this */
-  /* This example assumes you have 3 columns - adjust as needed */
-  th:nth-child(1), td:nth-child(1) {
-    width: 5%;
-  }
-  th:nth-child(2), td:nth-child(2) {
-    width: 45%;
-  }
-  th:nth-child(3), td:nth-child(3) {
-    width: 10%;
-  }
-  th:nth-child(4), td:nth-child(4) {
-    width: 20%;
-  }
-  th:nth-child(5), td:nth-child(5) {
-    width: auto;
-  }
-  th:nth-child(6), td:nth-child(6) {
-    width: auto;
+  tr:nth-child(even) {
+    background-color: rgba(76, 175, 80, 0.05);
   }
   
-  /* The rest of your existing CSS remains unchanged */
-  h2 {
-      text-align: center;
+  tr:hover {
+    background-color: rgba(76, 175, 80, 0.1);
   }
-  p {
-      text-align: right;
-      font-size: 12px;
+  
+  /* NFT Table Specific Styles */
+  .nft-container {
+    margin-top: 2rem;
+    background: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow);
   }
-  form {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 10px;
-      padding: 10px;
+  
+  /* Account Info Styles */
+  .account-info {
+    background: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow);
+    text-align: center;
+    word-break: break-all;
   }
-  button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .app {
+      padding: 1rem;
+    }
+    
+    table {
+      font-size: 0.8rem;
+    }
+    
+    th, td {
+      padding: 0.5rem;
+    }
   }
-  button:hover {
-      background-color: #45a049;
+  
+  /* Toast Notifications */
+  .Toastify__toast {
+    border-radius: 0.5rem !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
   }
-  input[type="text"],
-  input[type="number"] {
-      width: 200px;
-      padding: 10px;
-      margin: auto;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
+  
+  /* Utility Classes */
+  .text-center {
+    text-align: center;
   }
-  .center {
-      margin: auto;
-      width: 50%;
-      padding: 10px;
+  
+  .mt-2 {
+    margin-top: 2rem;
   }
-  input[type="text"]:focus{
-      border: 3px solid #555;
-      outline: none;
-      box-shadow: 0 0 5px #555;
-      background-color: #e8f0fe;
-      transition: background-color 0.3s ease;
+  
+  .mb-2 {
+    margin-bottom: 2rem;
   }
-  input[type="file"]{
-      width: 200px;
-      margin: auto;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-  }
-  input[type="file"]:focus{
-      border: 3px solid #555;
-      outline: none;
-      box-shadow: 0 0 5px #555;
-      background-color: #e8f0fe;
-      transition: background-color 0.3s ease;
-  }
-  .error-message {
-      color: red;
-  }
-  .success-message {
-      color: green;background-color: white;
-      color: #4CAF50;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
+  
+  .flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }

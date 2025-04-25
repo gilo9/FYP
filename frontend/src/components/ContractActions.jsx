@@ -1,55 +1,48 @@
+// Updated ContractActions.jsx with better structure
 import React, {useState} from 'react';
-import { mintNFT,burnNFT,getCID, viewNFTs } from '../utils/contractServices';
+import { mintNFT, burnNFT, viewNFTs } from '../utils/contractServices';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { create } from 'kubo-rpc-client';
-import { kubo_url } from '../utils/constants';
 
-
-function ContractActions(){
-
-
+function ContractActions() {
     const [nfts, setNfts] = useState([]);
-    const[files,setFiles] = useState([]);
+    const [files, setFiles] = useState([]);
     const [fileName, setFileName] = useState("");
     const [fileType, setFileType] = useState("");
     const [fileSize, setFileSize] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
 
     const mintNFTHandler = async (file) => {
-        try{
-            const client = create({
-                port: 5001,
-                host: "127.0.0.1",
-                protocol: "http",
-            });
-            
+        setIsLoading(true);
+        try {
+            const client = create({ port: 5001, host: "127.0.0.1", protocol: "http" });
             const cid = await client.add(file);
-            console.log('File added to IPFS with CID: ',cid.cid.toString());
-
+            
             const metadata = {
                 name: fileName,
                 type: fileType,
                 size: fileSize,
                 cid: cid.cid.toString(),
             };
-            const jsonMetadata = JSON.stringify(metadata);
-            const transaction = await mintNFT(jsonMetadata);
-            console.log('NFT minted successfully');
+            
+            await mintNFT(JSON.stringify(metadata));
+            toast.success("NFT minted successfully!");
             setFiles([]);
             setFileName("");
             setFileType("");
             setFileSize(0);
-            viewNFTHandler();
-        }catch (error) {
-            console.log("error -->", error);
-            toast.error(error?.reason);
+            await viewNFTHandler();
+        } catch (error) {
+            console.error("Error:", error);
+            toast.error(error?.reason || "Failed to mint NFT");
+        } finally {
+            setIsLoading(false);
         }
     };
+
     const handleFileChange = (e) => {
-        if (e.target.files.length == 0) {
-            console.error('No file selected');
-            return;
-        }
+        if (e.target.files.length === 0) return;
         setFiles(e.target.files[0]);
         setFileName(e.target.files[0].name);
         setFileType(e.target.files[0].type);
@@ -60,104 +53,111 @@ function ContractActions(){
         e.preventDefault();
         if (files) {
             mintNFTHandler(files);
-            
-            toast.success("File uploaded and NFT minted successfully!");
-        }else {
-            console.error('No file selected');
+        } else {
+            toast.error('Please select a file first');
         }
     };
 
     const burnNFTHandler = async (tokenId) => {
         try {
-            const transaction = await burnNFT(tokenId);
-            console.log('NFT burned successfully');
+            await burnNFT(tokenId);
+            toast.success("NFT burned successfully!");
+            await viewNFTHandler();
         } catch (error) {
-            console.error('Error burning NFT:', error.message);
+            toast.error(error?.reason || "Failed to burn NFT");
         }
-        ;
     }
 
     const viewNFTHandler = async () => {
         try {
             const nfts = await viewNFTs();
-            console.log('NFTs:', nfts);
             setNfts(nfts);
-            console.log('NFTs:');
-
         } catch (error) {
-            console.error('Error viewing NFTs:', error.message);
+            toast.error("Failed to load NFTs");
         }
     }
-
-    function nftTable(){
-        const bool = nfts.length > 0;
-        if (bool) {
-            return (
-                <div>
-                    <table>
-                       
-                    </table>
-
-                    {nfts && nfts.map((nft, index) => (
-                    <div>
-                        
-                        <div >
-                        <table>
-                            <thead>
-                            <th> #</th>
-                            <th>file name</th>
-                            <th>file type</th>
-                            <th>file size</th>
-                            <th>view</th>
-                            <th>delete</th>
-                        </thead>
-                                <tr key={index}>
-                                    <td>{index + 1}</td>
-                                   <td>  {JSON.parse(nft).name}</td>
-                                <td>{JSON.parse(nft).type}</td>
-                                <td>{JSON.parse(nft).size}</td>
-                                <td>
-                                    <a href={"http://localhost:8080/ipfs/" + JSON.parse(nft).cid} target="_blank" rel="noopener noreferrer">
-                                        <button>View</button>
-                                    </a>
-                                </td>
-                                <td>
-                                    <button onClick={() => burnNFTHandler(index)}>Delete</button>
-                                </td>
-                                </tr>
-                            </table>
-                            </div>
-                        </div>
-                    ))}
-                </div>);
-        }
-        else {
-            return (
-                <div>
-                    <h2>You have no NFTs</h2>
-                </div>
-            );
-        }
-    }
-    
 
     return (
-        <div>
-            <h2>BLOCK STORAGE</h2>
-            <h2>Upload your files to IPFS and mint an NFT</h2>
-            <div>
-                <form onSubmit={handleSubmit} name = "upload-form">
-                    <input type="file" onChange={(e) =>handleFileChange(e)}/>
-                    <input type = "text" value={fileName} onChange={(e) => setFileName(e.target.value)} placeholder = "Enter file name" />
-                    <button type="submit" disabled ={!files}>Upload</button>
+        <div className="contract-actions">
+            <div className="upload-section">
+                <h2>Upload your files to IPFS and mint an NFT</h2>
+                <form onSubmit={handleSubmit}>
+                    <input 
+                        type="file" 
+                        onChange={handleFileChange}
+                        required
+                    />
+                    <input 
+                        type="text" 
+                        value={fileName} 
+                        onChange={(e) => setFileName(e.target.value)} 
+                        placeholder="File name"
+                        required
+                    />
+                    <button type="submit" disabled={!files || isLoading}>
+                        {isLoading ? 'Minting...' : 'Upload & Mint NFT'}
+                    </button>
                 </form>
             </div>
-            <div>
-                <button onClick={viewNFTHandler}>Reload</button>
-                <h2>Your NFTs</h2>
-                {nftTable()}
+
+            <div className="nft-container">
+                <div className="flex-center">
+                    <button onClick={viewNFTHandler} className="reload-btn">
+                        Reload NFTs
+                    </button>
+                </div>
+                
+                <h2 className="text-center">Your NFTs</h2>
+                
+                {nfts.length > 0 ? (
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>File Name</th>
+                                <th>Type</th>
+                                <th>Size</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {nfts.map((nft, index) => {
+                                const parsedNft = JSON.parse(nft);
+                                return (
+                                    <tr key={index}>
+                                        <td>{index + 1}</td>
+                                        <td>{parsedNft.name}</td>
+                                        <td>{parsedNft.type}</td>
+                                        <td>{parsedNft.size} bytes</td>
+                                        <td className="flex-center">
+                                            <a 
+                                                href={`http://localhost:8080/ipfs/${parsedNft.cid}`} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer"
+                                            >
+                                                <button className="view-btn">View</button>
+                                            </a>
+                                            <button 
+                                                onClick={() => burnNFTHandler(index)}
+                                                className="delete-btn"
+                                            >
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                ) : (
+                    <div className="text-center mt-2">
+                        <h3>You have no NFTs yet</h3>
+                        <p>Upload a file to mint your first NFT</p>
+                    </div>
+                )}
             </div>
         </div>
     );
 }
+
 export default ContractActions;
