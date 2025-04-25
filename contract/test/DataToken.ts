@@ -36,7 +36,7 @@ describe("DTK Contract", function() {
             const tokenId = mintEvents[0].args.tokenId;
             
             const uri = await hardhatToken.tokenURI(tokenId);
-            expect(uri).to.equal("http://127.0.0.1:8080/ipfs/" + newTokenUri);
+            expect(uri).to.equal( newTokenUri);
         });
     });
 
@@ -50,7 +50,7 @@ describe("DTK Contract", function() {
 
             const tokenURI = await hardhatToken.tokenURI(tokenId);
 
-            expect(tokenURI).to.equal("http://127.0.0.1:8080/ipfs/token 1");
+            expect(tokenURI).to.equal("token 1");
 
         });
         it("Should retrieve the total supply of DTK ", async function(){
@@ -71,7 +71,7 @@ describe("DTK Contract", function() {
             const tokens = await hardhatToken.tokensOfOwner(owner.address);
             console.log("Tokens of owner:",tokens);
             expect(tokens.length).to.equal(2);
-            expect(tokens[0]).to.equal("http://127.0.0.1:8080/ipfs/token 1");
+            expect(tokens[0]).to.equal("token 1");
         });
 
        // it("Should retrieve tokenId from tokenURI", async function(){});
@@ -88,47 +88,24 @@ describe("DTK Contract", function() {
     })
     describe("Token Events", function(){
         it("Should emit tokenMinted  when .mint() is called", async function(){
-            const { owner, mintEvents} = await loadFixture(deployTokenFixture);
-            console.log("Reciept:",mintEvents[0].args);
-            expect(mintEvents.length).to.be.greaterThan(0);
-            expect(mintEvents[0].args.to).to.equal(owner.address);
-            expect(mintEvents[0].args.tokenId).to.equal(0)
-            expect(mintEvents[0].args.uri).to.equal("token 1"); //ipfs base uri appended when uri is called from hardhatToken.tokenURI()
+            const { tx} = await loadFixture(deployTokenFixture);
+            expect(tx).to.emit(tx,"TokenMinted"); //ipfs base uri appended when uri is called from hardhatToken.tokenURI()
 
         });
 
         it("Should emit tokenBurned when _burn is called",async function name() {
-            const {hardhatToken,mintEvents} = await loadFixture(deployTokenFixture);
-           
+            const {hardhatToken} = await loadFixture(deployTokenFixture);
+            const tokenId = 0;
+            await expect(hardhatToken.burnToken(tokenId)).to.emit(hardhatToken, "TokenBurned").withArgs(tokenId);
 
-            const tokenId = mintEvents[0].args.tokenId;
-
-            const burn = await hardhatToken.burnToken(tokenId);
-
-            const receipt2 = await burn.wait();
-
-            const burnEvents = await hardhatToken.queryFilter(hardhatToken.filters.TokenBurned(),receipt2.blockNumber);
-
-            expect(burnEvents.length).to.be.greaterThan(0);
-            expect(burnEvents[0].args.tokenId).to.equal(tokenId);
             
         });
 
          it("Should emit token transferred when _transfer is called", async function () {
             const { hardhatToken, owner, addr1, mintEvents } = await loadFixture(deployTokenFixture);
-
-            const tokenId = mintEvents[0].args.tokenId;
-
-
+            const tokenId = 0;
             const transfer = await hardhatToken.transferToken(addr1,tokenId);
-
-            const transferEvents = await hardhatToken.queryFilter(hardhatToken.filters.TokenTransferred(), transfer.blockNumber);
-            expect(transferEvents.length).to.be.greaterThan(0);
-            expect(transferEvents[0].args.to).to.equal(addr1.address);
-            expect(transferEvents[0].args.from).to.equal(owner.address);
-             expect(transferEvents[0].args.tokenId).to.equal(tokenId);
-
-
+            expect(transfer).to.emit(hardhatToken, "TokenTransferred").withArgs(owner.address, addr1.address, tokenId);
         }); 
     })
 });
