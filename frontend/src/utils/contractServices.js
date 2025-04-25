@@ -20,6 +20,22 @@ export const initialize = async () => {
   };
   initialize();
 
+  export const requestAccount = async () => {
+    if (!provider) {
+      await initialize();
+    }
+    try {
+      const accounts = await provider.send("eth_requestAccounts", []);
+      return accounts[0]; // Return the first account
+    } catch (error) {
+      console.error("Error requesting account:", error.message);
+      return null;
+    }
+  };
+
+
+  
+
 
 export const viewNFTs = async() => {
     try{
@@ -35,24 +51,16 @@ export const viewNFTs = async() => {
     }
 
 }
-  
-  
-
-
-
-export const requestAccount = async () => {
-    if (!provider) {
-      await initialize();
-    }
+export const transferNFT = async (to, tokenIndex) => {
     try {
-      const accounts = await provider.send("eth_requestAccounts", []);
-      return accounts[0]; // Return the first account
+        const tokenId = await contract.tokenOfOwnerByIndex(signer, tokenIndex);
+        const transaction = await contract.transferToken(to, tokenId);
+        await transaction.wait();
+        console.log('NFT transferred successfully');
     } catch (error) {
-      console.error("Error requesting account:", error.message);
-      return null;
+        console.error('Error transferring NFT:', error.message);
     }
-  };
-
+}
 
 export const mintNFT = async (CID) => {
     try {

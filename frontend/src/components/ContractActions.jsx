@@ -1,6 +1,6 @@
 // Updated ContractActions.jsx with better structure
 import React, {useState} from 'react';
-import { mintNFT, burnNFT, viewNFTs } from '../utils/contractServices';
+import { mintNFT, burnNFT, viewNFTs, transferNFT } from '../utils/contractServices';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { create } from 'kubo-rpc-client';
@@ -12,6 +12,10 @@ function ContractActions() {
     const [fileType, setFileType] = useState("");
     const [fileSize, setFileSize] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
+    const [recipientAddress, setRecipientAddress] = useState("");
+    const [showTransferModal, setShowTransferModal] = useState(false);
+    const [tokenIndex, setTokenIndex] = useState(null);
+
 
     const mintNFTHandler = async (file) => {
         setIsLoading(true);
@@ -49,6 +53,16 @@ function ContractActions() {
         setFileSize(e.target.files[0].size);
     }
 
+    const transferNFTHandler = async (to, tokenIndex) => {
+        try {
+            await transferNFT(to, tokenIndex);
+            toast.success("NFT transferred successfully!");
+            await viewNFTHandler();
+        } catch (error) {
+            toast.error(error?.reason || "Failed to transfer NFT");
+        }
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (files) {
@@ -80,7 +94,7 @@ function ContractActions() {
     return (
         <div className="contract-actions">
             <div className="upload-section">
-                <h2>Upload your files to IPFS and mint an NFT</h2>
+                <h2>Blockahin Data Sharing Platform</h2>
                 <form onSubmit={handleSubmit}>
                     <input 
                         type="file" 
@@ -127,7 +141,7 @@ function ContractActions() {
                                     <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td>{parsedNft.name}</td>
-                                        <td>{parsedNft.type}</td>
+                                        <td>{parsedNft.name.split(".")[1]}</td>
                                         <td>{parsedNft.size} bytes</td>
                                         <td className="flex-center">
                                             <a 
@@ -135,16 +149,27 @@ function ContractActions() {
                                                 target="_blank" 
                                                 rel="noopener noreferrer"
                                             >
-                                                <button className="view-btn">View</button>
+                                                <button className="table-button">View</button>
                                             </a>
                                             <button 
                                                 onClick={() => burnNFTHandler(index)}
-                                                className="delete-btn"
+                                                className="table-button"
                                             >
                                                 Delete
                                             </button>
+                                            <button onClick={() => {
+                                                setShowTransferModal(true);
+                                                setTokenIndex(index);
+                                            }}
+                                            className='table-button'>
+                                              Transfer
+                                            </button>
+
                                         </td>
                                     </tr>
+                                    
+                                    
+
                                 );
                             })}
                         </tbody>
@@ -155,6 +180,31 @@ function ContractActions() {
                         <p>Upload a file to mint your first NFT</p>
                     </div>
                 )}
+                {showTransferModal && (
+                    <div className="modal">
+                    <div className="modal-content">
+                    <h3>Transfer Token #{tokenIndex}</h3>
+                    <h3>FileName: {nfts[tokenIndex] ? JSON.parse(nfts[tokenIndex]).name : ''}</h3>
+      <input
+        type="text"
+        placeholder="Recipient address"
+        value={recipientAddress}
+        onChange={(e) => setRecipientAddress(e.target.value)}
+      />
+      <button
+        onClick={async () => {
+            await transferNFTHandler(recipientAddress, tokenIndex);
+            setShowTransferModal(false);
+            setRecipientAddress("");
+        }}
+      >
+        Submit
+      </button>
+      <button onClick={() => setShowTransferModal(false)}>Cancel</button>
+    </div>
+  </div>
+)}
+
             </div>
         </div>
     );
