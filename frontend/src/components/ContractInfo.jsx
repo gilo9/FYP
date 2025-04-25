@@ -3,7 +3,6 @@ import React from "react";
 function ContractInfo({ account }) {
     return(
         <div>
-            <h2>Contract Information</h2>
             <p>Account: {account}</p>
         </div>
     );

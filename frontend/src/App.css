@@ -1,101 +1,120 @@
-table
-{
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 14px;
+table {
+    margin: auto;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
     color: #333;
     background-color: #f4f4f4;
-}
-tr
-{
-  background-color: #f4f4f4;
-  width: 100%;
-}
-td
-{
-  padding: 8px;
-  border: 1px solid #ddd;
-  width: inherit;
-}
-th
-{
-  padding: 8px;
-  border: 1px solid #ddd;
-  background-color: #4CAF50;
-  color: white;
-  width: 200px;
-}
-h2{
-    text-align: center;
-}
-p {
-    text-align: right;
-    font-size: 12px;
-}
-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 10px;
-    padding: 10px;
-}
-button {
+    table-layout: fixed; /* This is the key property */
+    width: 100%; /* Or specify a fixed width like 800px */
+  }
+  
+  tr {
+    background-color: #f4f4f4;
+  }
+  
+  td, th {
+    padding: 8px;
+    border: 1px solid #ddd;
+    word-wrap: break-word; /* Ensures long words will wrap */
+    overflow: hidden; /* Hides content that overflows */
+  }
+  
+  th {
     background-color: #4CAF50;
     color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-button:hover {
-    background-color: #45a049;
-}
-input[type="text"],
-input[type="number"] {
-    width: 200px;
     padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-
-}
-.center {
-    margin: auto;
-    width: 50%;
-    border: 3px solid green;
-    padding: 10px;
-}
-
-input[type="text"]:focus{
-    border: 3px solid #555;
-    outline: none;
-    box-shadow: 0 0 5px #555;
-    background-color: #e8f0fe;
-    transition: background-color 0.3s ease;
-}
-input[type="file"]{
-    width: 200px;
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-input[type="file"]:focus{
-    border: 3px solid #555;
-    outline: none;
-    box-shadow: 0 0 5px #555;
-    background-color: #e8f0fe;
-    transition: background-color 0.3s ease;
-}
-.error-message {
-    color: red;
-}
-.success-message {
-    color: green;background-color: white;
-    color: #4CAF50;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
+  }
+  
+  /* If you want to specify column widths, you can do so like this */
+  /* This example assumes you have 3 columns - adjust as needed */
+  th:nth-child(1), td:nth-child(1) {
+    width: 5%;
+  }
+  th:nth-child(2), td:nth-child(2) {
+    width: 45%;
+  }
+  th:nth-child(3), td:nth-child(3) {
+    width: 10%;
+  }
+  th:nth-child(4), td:nth-child(4) {
+    width: 20%;
+  }
+  th:nth-child(5), td:nth-child(5) {
+    width: auto;
+  }
+  th:nth-child(6), td:nth-child(6) {
+    width: auto;
+  }
+  
+  /* The rest of your existing CSS remains unchanged */
+  h2 {
+      text-align: center;
+  }
+  p {
+      text-align: right;
+      font-size: 12px;
+  }
+  form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 10px;
+      padding: 10px;
+  }
+  button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+  }
+  button:hover {
+      background-color: #45a049;
+  }
+  input[type="text"],
+  input[type="number"] {
+      width: 200px;
+      padding: 10px;
+      margin: auto;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+  }
+  .center {
+      margin: auto;
+      width: 50%;
+      padding: 10px;
+  }
+  input[type="text"]:focus{
+      border: 3px solid #555;
+      outline: none;
+      box-shadow: 0 0 5px #555;
+      background-color: #e8f0fe;
+      transition: background-color 0.3s ease;
+  }
+  input[type="file"]{
+      width: 200px;
+      margin: auto;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+  }
+  input[type="file"]:focus{
+      border: 3px solid #555;
+      outline: none;
+      box-shadow: 0 0 5px #555;
+      background-color: #e8f0fe;
+      transition: background-color 0.3s ease;
+  }
+  .error-message {
+      color: red;
+  }
+  .success-message {
+      color: green;background-color: white;
+      color: #4CAF50;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+  }

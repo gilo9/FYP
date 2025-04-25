@@ -8,7 +8,7 @@ import { kubo_url } from '../utils/constants';
 
 function ContractActions(){
 
-    const [tokenId, setTokenId] = useState("");
+
     const [nfts, setNfts] = useState([]);
     const[files,setFiles] = useState([]);
     const [fileName, setFileName] = useState("");
@@ -36,6 +36,10 @@ function ContractActions(){
             const transaction = await mintNFT(jsonMetadata);
             console.log('NFT minted successfully');
             setFiles([]);
+            setFileName("");
+            setFileType("");
+            setFileSize(0);
+            viewNFTHandler();
         }catch (error) {
             console.log("error -->", error);
             toast.error(error?.reason);
@@ -48,32 +52,29 @@ function ContractActions(){
         }
         setFiles(e.target.files[0]);
         setFileName(e.target.files[0].name);
+        setFileType(e.target.files[0].type);
+        setFileSize(e.target.files[0].size);
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (files) {
-            setFileType(files.type);
-            setFileSize(files.size);
-            console.log('File Type:', files.type);
-            console.log('File Size:', files.size);
-            
             mintNFTHandler(files);
             
+            toast.success("File uploaded and NFT minted successfully!");
         }else {
             console.error('No file selected');
         }
     };
 
-    const burnNFTHandler = async () => {
+    const burnNFTHandler = async (tokenId) => {
         try {
             const transaction = await burnNFT(tokenId);
             console.log('NFT burned successfully');
         } catch (error) {
             console.error('Error burning NFT:', error.message);
         }
-        setTokenId("");
-        viewNFTHandler();
+        ;
     }
 
     const viewNFTHandler = async () => {
@@ -87,55 +88,74 @@ function ContractActions(){
             console.error('Error viewing NFTs:', error.message);
         }
     }
+
+    function nftTable(){
+        const bool = nfts.length > 0;
+        if (bool) {
+            return (
+                <div>
+                    <table>
+                       
+                    </table>
+
+                    {nfts && nfts.map((nft, index) => (
+                    <div>
+                        
+                        <div >
+                        <table>
+                            <thead>
+                            <th> #</th>
+                            <th>file name</th>
+                            <th>file type</th>
+                            <th>file size</th>
+                            <th>view</th>
+                            <th>delete</th>
+                        </thead>
+                                <tr key={index}>
+                                    <td>{index + 1}</td>
+                                   <td>  {JSON.parse(nft).name}</td>
+                                <td>{JSON.parse(nft).type}</td>
+                                <td>{JSON.parse(nft).size}</td>
+                                <td>
+                                    <a href={"http://localhost:8080/ipfs/" + JSON.parse(nft).cid} target="_blank" rel="noopener noreferrer">
+                                        <button>View</button>
+                                    </a>
+                                </td>
+                                <td>
+                                    <button onClick={() => burnNFTHandler(index)}>Delete</button>
+                                </td>
+                                </tr>
+                            </table>
+                            </div>
+                        </div>
+                    ))}
+                </div>);
+        }
+        else {
+            return (
+                <div>
+                    <h2>You have no NFTs</h2>
+                </div>
+            );
+        }
+    }
+    
+
     return (
         <div>
-            <h2>Contract Actions</h2>
+            <h2>BLOCK STORAGE</h2>
+            <h2>Upload your files to IPFS and mint an NFT</h2>
             <div>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} name = "upload-form">
                     <input type="file" onChange={(e) =>handleFileChange(e)}/>
                     <input type = "text" value={fileName} onChange={(e) => setFileName(e.target.value)} placeholder = "Enter file name" />
                     <button type="submit" disabled ={!files}>Upload</button>
                 </form>
             </div>
-            <div class="center">
-                <input
-                    type = "text"
-                    value = {tokenId}
-                    onChange = {(e) => setTokenId(e.target.value)}
-                    placeholder = "Enter token ID" 
-                />
-                <button onClick={burnNFTHandler}>Burn NFT</button>
-            </div>
             <div>
-                <button onClick={viewNFTHandler}>View NFTs</button>
-                <table>
-                            <thead>
-                                <th> #</th>
-                                <th>file name</th>
-                                <th>file type</th>
-                                <th>file size</th>
-                                <th>view</th>
-                            </thead>
-                </table>
-
-                {nfts && nfts.map((nft, index) => (
-                <div>
-                    
-                    <div key={index}>
-                        <table>
-                            <tr><td>{index + 1}: {JSON.parse(nft).name}</td>
-                            <td>{JSON.parse(nft).type}</td>
-                            <td>{JSON.parse(nft).size}</td>
-                            <td>
-                                <a href={"http://localhost:8080/ipfs/" + JSON.parse(nft).cid} target="_blank" rel="noopener noreferrer">
-                                    <button>View</button>
-                                </a>
-                            </td>
-                            </tr>
-                        </table>
-                        </div>
-                    </div>
-                ))}
+                <button onClick={viewNFTHandler}>Reload</button>
+                <h2>Your NFTs</h2>
+                {nftTable()}
             </div>
         </div>
     );

@@ -87,7 +87,8 @@ export const getCID = async (tokenId) => {
 
 export const burnNFT = async (tokenId) => {
     try {
-        const transaction = await contract.burnToken(tokenId);
+        const token = await contract.tokenOfOwnerByIndex(tokenId);
+        const transaction = await contract.burnToken(token);
         console.log('NFT burned successfully');
         return transaction;
     } catch (error) {
