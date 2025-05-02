@@ -50,7 +50,7 @@ contract DataToken is ERC721,ERC721Enumerable, ERC721URIStorage, ERC721Burnable{
         console.log("Transferring token with ID: %s", tokenId);
         emit TokenTransferred(tokenId, to, msg.sender);
     }
-    function burnToken(uint256 tokenId) public {
+    function burnToken(uint256 tokenId) public  {
         require(ownerOf(tokenId) == msg.sender, "Token does not exist");
         _burn(tokenId);
         console.log("Burning token with ID: %s", tokenId);

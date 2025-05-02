@@ -76,7 +76,7 @@ function ContractActions() {
         try {
             await burnNFT(tokenId);
             toast.success("NFT burned successfully!");
-            await viewNFTHandler();
+            window.location.reload();
         } catch (error) {
             toast.error(error?.reason || "Failed to burn NFT");
         }
@@ -109,7 +109,7 @@ function ContractActions() {
                         required
                     />
                     <button type="submit" disabled={!files || isLoading}>
-                        {isLoading ? 'Minting...' : 'Upload & Mint NFT'}
+                        {isLoading ? 'Minting...' : 'Upload File'}
                     </button>
                 </form>
             </div>
@@ -142,7 +142,7 @@ function ContractActions() {
                                         <td>{index + 1}</td>
                                         <td>{parsedNft.name}</td>
                                         <td>{parsedNft.name.split(".")[1]}</td>
-                                        <td>{parsedNft.size} bytes</td>
+                                        <td>{(parsedNft.size / 1024).toFixed(2)} KB</td>
                                         <td className="flex-center">
                                             <a 
                                                 href={`http://localhost:8080/ipfs/${parsedNft.cid}`} 
@@ -178,6 +178,7 @@ function ContractActions() {
                     <div className="text-center mt-2">
                         <h3>You have no NFTs yet</h3>
                         <p>Upload a file to mint your first NFT</p>
+                        <p>Click the Reload NFTS button if your files are not showing up</p>
                     </div>
                 )}
                 {showTransferModal && (

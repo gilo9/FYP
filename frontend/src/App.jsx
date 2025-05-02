@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { requestAccount } from "./utils/contractServices";
+import { initialize, requestAccount } from "./utils/contractServices";
 import { ToastContainer, toast } from 'react-toastify';
 import ContractInfo from "./components/ContractInfo";
 import ContractActions from "./components/ContractActions";
@@ -9,6 +9,7 @@ import "./App.css";
 
 function App() {
   const [account, setAccount] = useState(null);
+  const [accountChange, setAccountChange] = useState(false);
 
   useEffect(() => {
     const fetchAccount = async () => {
@@ -19,15 +20,20 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const handleAccountChange = (newAccounts) => 
+    const handleAccountChange = (newAccounts) => {
+      setAccountChange(true);
       setAccount(newAccounts.length > 0 ? newAccounts[0] : null);
+      window.location.reload();
+      toast.success("Account changed successfully!");
+    }
     if (window.ethereum) {
       window.ethereum.on('accountsChanged', handleAccountChange);
+      //fetchAccount();
     }
     return () => {
         window.ethereum.removeListener('accountsChanged', handleAccountChange);
       };
-  });
+});
 
   return ( 
     <div className="app">

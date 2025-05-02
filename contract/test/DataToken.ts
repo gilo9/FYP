@@ -108,4 +108,37 @@ describe("DTK Contract", function() {
             expect(transfer).to.emit(hardhatToken, "TokenTransferred").withArgs(owner.address, addr1.address, tokenId);
         }); 
     })
+
+    describe("Token Access Control", function(){
+       
+
+        it("Should revert if non-owner tries to burn a token", async function(){
+            const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
+            const tokenId = 0;
+            await expect(hardhatToken.connect(addr1).burnToken(tokenId)).to.be.reverted;
+        });
+    })
+    describe("Token URI", function(){
+        it("Should revert if tokenId does not exist", async function(){
+            const { hardhatToken } = await loadFixture(deployTokenFixture);
+            const tokenId = 9999;
+            await expect(hardhatToken.tokenURI(tokenId)).to.be.reverted;
+        });
+    }
+    )
+    describe("Token Transfer", function(){
+        it("Should revert if tokenId does not exist", async function(){
+            const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
+            const tokenId = 9999;
+            await expect(hardhatToken.transferToken(addr1.address, tokenId)).to.be.reverted;
+        });
+    });
+    describe("Token Burn", function(){
+        it("Should revert if tokenId does not exist", async function(){
+            const { hardhatToken } = await loadFixture(deployTokenFixture);
+            const tokenId = 9999;
+            await expect(hardhatToken.burnToken(tokenId)).to.be.reverted;
+        });
+    }
+    )
 });

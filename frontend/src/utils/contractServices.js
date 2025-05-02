@@ -1,6 +1,7 @@
-import DTK_ABI from './DataTokenModule#DataToken.json'
+import DTK_ABI from 'chain/DataTokenModule#DataToken.json';
 import {BrowserProvider, Contract} from 'ethers';
-import {CONTRACT_ADDRESS} from'./constants.js';
+import CONTRACT_ADDRESS from 'chain/deployed_addresses.json';
+
 
 let provider;
 let contract;
@@ -10,10 +11,14 @@ let signer;
 
 export const initialize = async () => {
     if (typeof window.ethereum !== "undefined") {
+     try { 
       provider = new BrowserProvider(window.ethereum);
       signer = await provider.getSigner();
-      contract = new Contract(CONTRACT_ADDRESS, DTK_ABI.abi, signer);
+      contract = new Contract(CONTRACT_ADDRESS["DataTokenModule#DataToken"], DTK_ABI.abi, signer);
       return { provider, contract, signer };
+     } catch (error) {
+      console.error("Error initializing contract:", error.message);
+    }
     } else {
       console.error("Please install MetaMask!");
     }
