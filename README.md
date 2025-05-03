@@ -88,7 +88,15 @@ bash
 ```
 ipfs daemon
 ```
+## Running Tests
+- Contract testing is done using the Mocha and Chai libraries
+- They consist of assertions and expectations.
+- To run tests, navigate to the contract directory and then run the following command
 
+```bash
+  cd contracts
+  npx hardhat test test/DataToken.ts
+```
 
 📄 License
 Distributed under the MIT License. See LICENSE for details.
